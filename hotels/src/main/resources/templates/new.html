@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reservation Confirmation</title>
+</head>
+<body>
+    <h1>Reservation Successful!</h1>
+    <p>Room Type: <span th:text="${reservation.roomType}"></span></p>
+    <p>Price: ₹<span th:text="${reservation.price}"></span></p>
+    <p>Guests: <span th:text="${reservation.maxGuests}"></span></p>
+    <p>Check-in Date: <span th:text="${reservation.checkinDate}"></span></p>
+    <p>Check-out Date: <span th:text="${reservation.checkoutDate}"></span></p>
+</body>
+</html>

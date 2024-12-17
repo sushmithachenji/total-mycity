@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Management</title>
+    <link rel="stylesheet" th:href="@{/CSS/Styles.css}">
+</head>
+<body>
+
+   
+    <div class="container" style="min-width: 100%;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>My<span>Site</span></h2>
+            </div>
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="/songs">Songs</a></li>
+                <li><a href="#">Shopping</a></li>
+                <li class="active">
+                    <a href="/hotels-page">Hotels</a>
+                    <ul class="submenu">
+                        <li><a href="/hotels/rooms">Rooms</a></li>
+                        <li><a href="/amenities/add">Amenities</a></li>
+                        <li><a href="/city-page">Add City</a></li>
+                        <li><a href="/city-list">City List</a></li>
+                        <li><a href="/hoteladd">Add Hotel</a></li>
+                        <li><a href="/list">Hotel List</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="welcome">
+                    <h2 id="greeting" th:text="${greetingText + ','+ username}"></h2>
+                    <p>Here is what Happening In Your Store</p>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="user-icons">
+                    <i class="fas fa-bell"></i>
+                    <img src="profile.jpg" alt="User Profile" class="profile-pic">
+                </div>
+            </div>
+
+           
+            <div class="city-add">
+
+  
+                <h1>Add or Update City</h1>
+<form th:action="@{/savecity}" method="post" th:object="${city}">
+    <input type="hidden" name="cityId" th:value="*{cityId}" />
+    <label for="name">City Name:</label>
+    <input type="text" id="name" name="name" th:value="*{name}" required>
+    <br>
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state" th:value="*{state}" required>
+    <br>
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" th:value="*{country}" required>
+    <br>
+    <button type="submit">Save</button>
+</form>
+
+            </div>
+
+        </div>
+    </div>
+
+
+ 
+
+   
+    <script th:src="@{/JS/Script.js}"></script>
+   
+</body>
+</html>

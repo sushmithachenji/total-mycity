@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Home Page</title>
+  <link rel="stylesheet" href="/css/Shopping_styles.css" />
+  <style>
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-bar {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 300px;
+    }
+
+    .search-button {
+      background-color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    /* Category Bar */
+    .category-bar {
+
+      padding: 0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 10px;
+      width: 100%;
+      display: flex;
+      /* Full-width bar */
+    }
+
+    .category-bar ul {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .category-item {
+      text-align: center;
+      flex: 1;
+      margin: 0 10px;
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid #1f1d1d;
+      background-color: #f88c49ef;
+      /* Base style for category items */
+    }
+
+    /* Style for the second category item style */
+    .category-item-style2 {
+      background-color: #f88c49ef;
+      /* Different background color */
+      border: 1px solid #1f1d1d;
+      /* Add a border */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      /* Add a shadow */
+    }
+
+    .category-item a {
+      color: #333;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .category-item a img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .category-bar ul li a:hover {
+      color: #f1e8e2;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .category-card {
+      background: #ff7a22;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .category-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .category-content {
+      position: relative;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100px;
+    }
+
+    .category-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #fb8910;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1;
+    }
+
+    .category-image {
+      width: 100%;
+      height: 80px;
+      object-fit: contain;
+      margin-top: 30px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .category-content {
+        min-height: 80px;
+      }
+
+      .category-image {
+        height: 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .categories-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Dropdown column */
+    .dropdown-column {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* Space between left and right content */
+      gap: 10px;
+      padding: 8px 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 10px;
+      width: 97%;
+      margin: auto;
+    }
+
+    /* Left section inside dropdown-column (select city) */
+    .dropdown-column .left {
+      flex: 1;
+      display: flex;
+    }
+
+    /* Adjusting the right section to make it more compact */
+    .dropdown-column .right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      /* Small gap between the search bar, filter icon, and add card icon */
+      max-width: 400px;
+      /* Limit the width of the right section for better alignment */
+    }
+
+    /* Search Box Styles */
+    .search-box {
+      position: relative;
+      width: 300px;
+      border: 1px solid #f0831e;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 40px 10px 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      background-color: transparent;
+    }
+
+    /* Placeholder text style */
+    .search-box input::placeholder {
+      color: #f0831e;
+      /* Orange placeholder color */
+    }
+
+    .search-box img {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    /* Button styles for icons */
+    .filters-icon,
+    .add-card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .filters-icon img,
+    .add-card-icon img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .filters-icon:hover img,
+    .add-card-icon:hover img {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+
+    .filters-icon:active img,
+    .add-card-icon:active img {
+      transform: scale(0.9);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .dropdown-column {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .dropdown-column .left,
+      .dropdown-column .right {
+        width: 100%;
+        /* Full width for both sections on small screens */
+      }
+
+      .right-container {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+
+      .filters-icon,
+      .add-card-icon {
+        justify-content: center;
+        margin-left: 0;
+      }
+    }
+
+    /* Dropdown Wrapper */
+    .dropdown-wrapper {
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 70%;
+    }
+
+    .dropdown-icon {
+      position: absolute;
+      left: 10px;
+      z-index: 1;
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      /* Ensures the image fits inside the given width and height */
+    }
+
+    /* Style for the select input */
+    select {
+      padding-left: 30px;
+      /* Adds space to the left to accommodate the icon */
+      width: 40%;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid #f2831c;
+      font-size: 16px;
+      background-color: #f2831c;
+
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    /* Focus state for the select input */
+    select:focus {
+      outline: none;
+      border-color: #f2831c;
+      /* Optional: Highlight the border on focus */
+      background-color: #f2831c;
+    }
+
+    /*shop brands*/
+    h1 {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      margin-bottom: 100px;
+    }
+
+    .category-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1000px;
+    }
+
+    .category-box {
+      background: linear-gradient(178.84deg, #F37022 2.55%, rgba(250, 187, 131, 0.96) 96.05%);
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      /* Keep width flexible based on container */
+      min-height: 300px;
+      /* Set a fixed height */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* Center content vertically */
+    }
+
+    .category h2 {
+      margin-bottom: 10px;
+      color: #333;
+      text-align: center;
+    }
+
+    .brands {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .brand {
+      background: linear-gradient(178.84deg, #F37022 2.55%, rgba(250, 187, 131, 0.96) 96.05%);
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px;
+    }
+
+    .brand img {
+      max-width: 100%;
+      max-height: 50px;
+      object-fit: contain;
+      /* Ensures the images remain within their box */
+    }
+
+    /*shop*/
+    h2 {
+      text-align: left;
+      margin-bottom: 20px;
+      color: #f0831e;
+      margin: 35px;
+    }
+
+    .container {
+  display: flex;
+  justify-content: space-around; /* This will distribute space evenly */
+  flex-wrap: wrap; /* Allow wrapping to avoid overflow */
+  gap: 20px; /* Reduced gap between items */
+  padding: 10px; /* Reduced padding */
+  margin-bottom: 20px; /* Keeps a consistent margin at the bottom */
+}
+
+.category-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1000px;
+}
+
+.category-box {
+  background: linear-gradient(178.84deg, #F37022 2.55%, rgba(250, 187, 131, 0.96) 96.05%);
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px; /* Reduced padding */
+  width: 100%; 
+  min-height: 280px; /* Reduced height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+}
+
+h2 {
+  text-align: left;
+  margin-bottom: 20px;
+  color: #f0831e;
+  margin: 10px; /* Reduced overall margin */
+}
+
+.shop-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 23%; 
+}
+
+.shop-item-box {
+  background: linear-gradient(178.84deg, #F37022 2.55%, rgba(250, 187, 131, 0.96) 96.05%);
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px; /* Reduced padding */
+  width: 270px; /* Reduced width */
+  height: 280px; /* Reduced height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px; 
+}
+
+.shop {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 20px; /* Reduced gap between items */
+}
+
+.shop-brand {
+  background: linear-gradient(178.84deg, #F37022 2.55%, rgba(250, 187, 131, 0.96) 96.05%);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px; 
+}
+
+.shop-brand img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+.shop-item-box img,
+.shop-brand img {
+  object-fit: contain;
+  width: 100%; 
+  height: auto; 
+}
+
+.brands {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 20px; /* Reduced gap between brand logos */
+  flex-wrap: wrap; 
+}
+
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Reduced padding */
+  width: 110px; 
+  height: 100px; 
+}
+
+.brand img {
+  max-width: 100%; 
+  max-height: 100%; 
+  object-fit: contain; 
+}
+    /*buttom bannar*/
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(3, 2fr);
+      gap: 12%;
+      margin-top: 10px;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+      height: 100%;
+      margin: 10px;
+
+    }
+    .button-container img:first-child {
+      grid-column: span 1;
+      height: 79.5%;
+      width: 175% ;
+      object-fit: contain;
+      margin-left: 20px; /* Move image slightly to the right */
+      margin: 10px auto;
+    }
+    .button-container img:last-child {
+      grid-column: span 2;
+      height: 70%;
+      width: 98%;
+      object-fit: contain;
+      margin-left: 20px ;
+      gap: 200%;
+    }
+    img {
+      width: 300%;
+      height: 200%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="nav_header" id="myHeader">
+    <div class="mobile_header">
+      <svg width="32px" height="32px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
+        transform="rotate(0)">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </g>
+      </svg>
+    </div>
+  <header class="mobile-header">
+    <div class="logo_placeholder">
+      <img src="/imgs/logo.png" alt="logo" />
+    </div>
+    <div class="nav_links_placeholder">
+      <ul class="nav_links">
+        <li class="nav_link">
+          <a href="/mycity-homepage"><span>Home</span></a>
+        </li>
+        <li class="nav_link">
+          <a href="/entertainment"><span>Entertainment</span></a>
+        </li>
+        <li class="nav_link active">
+          <a href="/homePage"><span>Shopping</span></a>
+        </li>
+        <li class="nav_link">
+          <a href="/tourism"><span>Tourism</span></a>
+        </li>
+
+        <li class="nav_link">
+          <a href="beauty"><span>Pay Bills</span></a>
+        </li>
+        <li class="nav_link">
+          <a href="ex"><span>Hotels</span></a>
+        </li>
+      </ul>
+    </div>
+    <div class="login-button_placeholder">
+      <button class="login_button"><a href="/register">Sign Up</a></button>
+    </div>
+  </header>
+  <div class="container-shop" style="display: block">
+    <div class="image-container">
+      <img src="/imgs/Component%201.png" alt="" />
+      <img src="/imgs/23404764_6744773.png" alt="" />
+
+      <img src="/imgs/24497435_6967607.png" alt="" />
+
+      <img src="/imgs/Rectangle 4.png" alt="" />
+      <img src="/imgs/rb_10210.png" alt="" />
+      <img src="/imgs/rb_102101.png" alt="" />
+    </div>
+    <!-- Dropdown Column -->
+    <div class="dropdown-column">
+      <div class="left">
+        <div class="dropdown-wrapper">
+          <img src="/imgs/cart img/Location.png" alt="City Icon" class="dropdown-icon" />
+
+          <select>
+            <option value="">Select a City</option>
+            <option value="alluri-sitharama-raju">Alluri Sitharama Raju</option>
+            <option value="anakapalli">Anakapalli</option>
+            <option value="ananthapuramu">Ananthapuramu</option>
+            <option value="annamayya">Annamayya</option>
+            <option value="bapatla">Bapatla</option>
+            <option value="chittoor">Chittoor</option>
+            <option value="dr-b-r-ambedkar-konaseema"> Dr. B.R. Ambedkar Konaseema</option>
+            <option value="east-godavari">East Godavari</option>
+            <option value="eluru">Eluru</option>
+            <option value="guntur">Guntur</option>
+            <option value="kakinada">Kakinada</option>
+            <option value="krishna">Krishna</option>
+            <option value="kurnool">Kurnool</option>
+            <option value="nandyal">Nandyal</option>
+            <option value="ntr">Ntr</option>
+            <option value="palnadu">Palnadu</option>
+            <option value="parvathipuram-manyam">Parvathipuram Manyam</option>
+            <option value="prakasam">Prakasam</option>
+            <option value="sri-potti-sriramulu-nellore">Sri Potti Sriramulu Nellore</option>
+            <option value="sri-sathya-sai">Sri Sathya Sai</option>
+            <option value="srikakulam">Srikakulam</option>
+            <option value="tirupati">Tirupati</option>
+            <option value="visakhapatnam">Visakhapatnam</option>
+            <option value="vizianagaram">Vizianagaram</option>
+            <option value="west-godavari">West Godavari</option>
+            <option value="ysr">Y.S.R. kadapa</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="right">
+        <div class="search-box">
+          <input type="text" placeholder="Search..." />
+          <img src="/imgs/cart img/search.png" alt="Search" />
+        </div>
+        <div class="add-card-icon">
+          <a href="/cart/view"><img src="/imgs/cart img/Shopping Cart.png" alt="Add Card" /></a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="location-buttons">
+      <a href="/shoppingCategory" style="text-decoration: none">
+        <button class="vsp">Categories</button>
+      </a>
+    </div>
+  </div>
+  <nav class="category-bar">
+    <ul>
+      <li class="category-item">
+        <a href="/mobiles">
+          <img src="/imgs/Apple-3.jpg" alt="Category 1">
+          <span>Mobiles</span>
+        </a>
+      </li>
+      <li class="category-item category-item-style2">
+        <a href="/shirts">
+          <img src="/imgs/ketch2.2.jpg" alt="Category 2">
+          <span>Shirts</span>
+        </a>
+      </li>
+    </ul>
+    <ul>
+      <li class="category-item">
+        <a href="/womens-tops">
+          <img src="/imgs/white1.webp" alt="Category 1">
+          <span>Tops</span>
+        </a>
+      </li>
+      <li class="category-item category-item-style2">
+        <a href="/homeTheatres">
+          <img src="/imgs/theater.png" alt="Category 2">
+          <span>Speakers</span>
+        </a>
+      </li>
+    </ul>
+    <ul>
+      <li class="category-item">
+        <a href="/mens-footwear">
+          <img src="/imgs/ASIAN-1.jpg" alt="Category 1">
+          <span>Footwear</span>
+        </a>
+      </li>
+      <li class="category-item category-item-style2">
+        <a href="home-needs">
+          <img src="/imgs/BSB HOME-2.jpg" alt="Category 2">
+          <span>Home Needs</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="categories">
+    <div class="heading-container">
+      <h2 class="heading">Deals near you</h2>
+    </div>
+    <div class="mens-wear">
+      <a href="/homeTheatres" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/theater.png" alt="" />
+          <p>Home Theater</p>
+        </div>
+      </a>
+      <a href="/shirts" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/shirt.png" alt="" />
+          <p>Shirts</p>
+        </div>
+      </a>
+      <a href="/doormates" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/doormates.png" alt="" />
+          <p>Doormates</p>
+        </div>
+      </a>
+      <a href="/rings" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/rings.png" alt="" />
+          <p>Rings</p>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="categories" style="margin-top: 50px">
+    <div class="heading-container">
+      <h2 class="heading">Based on interest</h2>
+    </div>
+    <div class="mens-wear">
+      <a href="/smart-watches" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/smart.png" alt="" />
+          <p>Smart Watches</p>
+        </div>
+      </a>
+      <a href="/womens-jeans" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/jeans-women.png" alt="" />
+          <p>Jeans</p>
+        </div>
+      </a>
+      <a href="/bangles" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/bangles.png" alt="" />
+          <p>Bangles</p>
+        </div>
+      </a>
+      
+      <a href="/bluetooth-earphones" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/bluetooth.png" alt="" />
+          <p>Bluetooth</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="categories" style="margin-top: 50px">
+    <div class="heading-container">
+      <h2 class="heading">Kids & Home Needs and More</h2>
+    </div>
+    <div class="mens-wear">
+      <a href="/frocks" style="text-decoration: none;">
+        <div class="mens">
+          <img src="/imgs/frock.png" alt="" />
+          <p>Frock</p>
+        </div>
+      </a>  
+      <a href="/bedsheets" style="text-decoration: none">
+        <div class="mens">
+          <img src="/imgs/bedsheet.png" alt="" />
+          <p>Bedsheets</p>
+        </div>
+      </a>
+      <a href="/rompers" style="text-decoration: none;">
+        <div class="mens">
+          <img src="/imgs/rompers.png" alt="" />
+          <p>Rompers</p>
+        </div>
+      </a>
+      <a href="/curtains" style="text-decoration: none"><div class="mens">
+        <img src="/imgs/curtains.png" alt="" />
+        <p>Curtains & Sheers</p>
+      </div></a>
+    </div>
+  </div>
+
+  <h2 style="padding-left: 12px; padding-top: 10px;">Shop By Brands</h2>
+  <div class="container">
+    <div class="category-container">
+      <h3>Music</h3><br>
+      <div class="category-box">
+        <div class="brands">
+          <div class="brand"><img src="/imgs/brand img/JBL-logo.svg" alt="JBL"></div>
+          <div class="brand"><img src="/imgs/brand img/Bose_logo.svg" alt="Bose"></div>
+          <div class="brand"><img src="/imgs/brand img/Sennheiser.svg" alt="Sennheiser"></div>
+          <a href="/boat-products"><div class="brand"><img src="/imgs/brand img/SailboatBrand.svg" alt="Sailboat Brand"></div></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-container">
+      <h3>Storage</h3><br>
+      <div class="category-box">
+        <div class="brands">
+          <div class="brand"><img src="/imgs/brand img/king.svg" alt="Kingston"></div>
+          <div class="brand"><img src="/imgs/brand img/Corsair-logo.svg" alt="Corsair"></div>
+          <a href="zebronics-products"><div class="brand"><img src="/imgs/brand img/Zebronics.svg" alt="Zebronics"></div></a>
+          <div class="brand"><img src="/imgs/brand img/SanDisk7.svg" alt="SanDisk"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-container">
+      <h3>Laptops</h3><br>
+      <div class="category-box">
+        <div class="brands">
+          <div class="brand"><img src="/imgs/brand img/hp-logo.png" alt="HP"></div>
+          <div class="brand"><img src="/imgs/brand img/Dell_Logo.svg" alt="Dell"></div>
+          <div class="brand"><img src="/imgs/brand img/Lenovo.svg" alt="Lenovo"></div>
+          <a href="/apple-products"><div class="brand"><img src="/imgs/brand img/apple-logo.svg" alt="Apple"></div></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-container">
+      <h3>Televisions</h3><br>
+      <div class="category-box">
+        <div class="brands">
+          <div class="brand"><img src="/imgs/brand img/Sony_logo.svg" alt="Sony"></div>
+          <div class="brand"><img src="/imgs/brand img/LG_symbol.svg" alt="LG"></div>
+          <div class="brand"><img src="/imgs/brand img/360_197_1.svg" alt="Samsung"></div>
+          <div class="brand"><img src="/imgs/brand img/tcl.svg" alt="TCL"></div>
+        </div>
+      </div>
+    </div>
+ 
+    
+  </div>
+  <div class="button-container">
+    <img src="/imgs/bottom banner 2.svg" alt="Image 1" />
+    <img src="/imgs/bottom banner 3.svg" alt="Image 2" />
+  </div>
+  <footer>
+    <div class="footer_nav-links_placeholder" hx-boost="true">
+      <ul class="footer_nav-links">
+        <li class="footer_nav-link"><a href="/about">About</a></li>
+        <li class="footer_nav-link"><a href="/contact">Contact</a></li>
+        <li class="footer_nav-link"><a href="">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer_social-links_placeholder">
+      <ul class="footer_social-links">
+        <li class="footer_social-link">
+          <a href="#">
+            <svg fill="white" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="24px"
+              height="24px" viewBox="0 0 14.906 32">
+              <path
+                d="M14.874,11.167 L14.262,14.207 C14.062,15.208 13.100,15.992 12.072,15.992 L10.000,15.992 L10.000,30.000 C10.000,31.104 9.159,32.000 8.049,32.000 L5.030,32.000 C3.920,32.000 3.017,31.102 3.017,29.999 L3.017,15.992 L2.011,15.992 C0.901,15.992 -0.002,15.095 -0.002,13.991 L-0.002,10.990 C-0.002,9.887 0.901,8.989 2.011,8.989 L3.017,8.989 L3.017,6.003 C3.017,2.716 5.693,0.041 8.994,0.013 C9.015,0.012 9.033,0.001 9.055,0.001 L13.081,0.001 C13.636,0.001 14.000,0.448 14.000,1.000 L14.000,6.000 C14.000,6.553 13.636,7.004 13.081,7.004 L10.061,7.004 L10.060,8.989 L13.079,8.989 C13.645,8.989 14.167,9.228 14.509,9.644 C14.852,10.059 14.985,10.615 14.874,11.167 ZM9.092,10.990 C9.078,10.991 9.067,10.998 9.053,10.998 L9.053,10.998 C8.497,10.997 8.046,10.549 8.047,9.997 L8.047,9.990 C8.047,9.990 8.047,9.990 8.047,9.990 C8.047,9.990 8.047,9.990 8.047,9.990 L8.049,6.003 C8.049,5.450 8.499,5.003 9.055,5.003 L12.074,5.003 L12.074,2.002 L9.094,2.002 C9.077,2.002 9.063,2.011 9.045,2.011 C6.831,2.011 5.030,3.802 5.030,6.003 L5.030,10.005 C5.030,10.558 4.579,11.006 4.023,11.006 C3.996,11.006 3.973,10.992 3.946,10.990 L2.011,10.990 L2.011,13.991 L4.023,13.991 C4.579,13.991 5.030,14.439 5.030,14.992 C5.030,15.044 5.008,15.088 5.000,15.138 L5.000,30.000 L8.049,29.999 L8.049,15.002 C8.049,14.998 8.047,14.995 8.047,14.992 C8.047,14.439 8.497,13.991 9.053,13.991 L12.072,13.991 C12.145,13.991 12.275,13.886 12.288,13.816 L12.857,10.990 L9.092,10.990 Z" />
+            </svg>
+          </a>
+        </li>
+        <li class="footer_social-link">
+          <a href="#">
+            <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
+                fill="white" />
+              <path
+                d="M18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z"
+                fill="white" />
+              <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M1.65396 4.27606C1 5.55953 1 7.23969 1 10.6V13.4C1 16.7603 1 18.4405 1.65396 19.7239C2.2292 20.8529 3.14708 21.7708 4.27606 22.346C5.55953 23 7.23969 23 10.6 23H13.4C16.7603 23 18.4405 23 19.7239 22.346C20.8529 21.7708 21.7708 20.8529 22.346 19.7239C23 18.4405 23 16.7603 23 13.4V10.6C23 7.23969 23 5.55953 22.346 4.27606C21.7708 3.14708 20.8529 2.2292 19.7239 1.65396C18.4405 1 16.7603 1 13.4 1H10.6C7.23969 1 5.55953 1 4.27606 1.65396C3.14708 2.2292 2.2292 3.14708 1.65396 4.27606ZM13.4 3H10.6C8.88684 3 7.72225 3.00156 6.82208 3.0751C5.94524 3.14674 5.49684 3.27659 5.18404 3.43597C4.43139 3.81947 3.81947 4.43139 3.43597 5.18404C3.27659 5.49684 3.14674 5.94524 3.0751 6.82208C3.00156 7.72225 3 8.88684 3 10.6V13.4C3 15.1132 3.00156 16.2777 3.0751 17.1779C3.14674 18.0548 3.27659 18.5032 3.43597 18.816C3.81947 19.5686 4.43139 20.1805 5.18404 20.564C5.49684 20.7234 5.94524 20.8533 6.82208 20.9249C7.72225 20.9984 8.88684 21 10.6 21H13.4C15.1132 21 16.2777 20.9984 17.1779 20.9249C18.0548 20.8533 18.5032 20.7234 18.816 20.564C19.5686 20.1805 20.1805 19.5686 20.564 18.816C20.7234 18.5032 20.8533 18.0548 20.9249 17.1779C20.9984 16.2777 21 15.1132 21 13.4V10.6C21 8.88684 20.9984 7.72225 20.9249 6.82208C20.8533 5.94524 20.7234 5.49684 20.564 5.18404C20.1805 4.43139 19.5686 3.81947 18.816 3.43597C18.5032 3.27659 18.0548 3.14674 17.1779 3.0751C16.2777 3.00156 15.1132 3 13.4 3Z"
+                fill="white" />
+            </svg>
+          </a>
+        </li>
+        <li class="footer_social-link">
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" class="bi bi-twitter-x"
+              viewBox="0 0 16 16">
+              <path
+                d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
+            </svg>
+          </a>
+        </li>
+        <li class="footer_social-link"><a href="#"></a></li>
+      </ul>
+    </div>
+    <div class="footer_copy-rights_placeholder">
+      <p class="copy-rights">Copyright © 2024 MyCity. All rights reserved.</p>
+    </div>
+  </footer>
+  <script>
+    const images = document.querySelectorAll(".image-container img");
+    let currentIndex = 0;
+
+    function showNextImage() {
+      images[currentIndex].classList.remove("active"); // Hide current image
+      currentIndex = (currentIndex + 1) % images.length; // Move to next image
+      images[currentIndex].classList.add("active"); // Show next image
+    }
+
+    // Start by showing the first image
+    images[currentIndex].classList.add("active");
+
+    // Change image every 3 seconds (adjust time as needed)
+    setInterval(showNextImage, 3000);
+  </script>
+  
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product Details</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS -->
+</head>
+<body>
+    <div class="product-details" style="display: flex;">
+        <div class="product">
+            <img th:src="@{/products/image/{id}(id=${product.productId})}" 
+                 alt="Product Image" style="width: 300px; height: auto;">
+        </div>
+        <div class="product-info">
+            <h1 th:text="${product.name}">Product Name</h1>
+            <p th:text="${product.specifications}">Product Specifications</p>
+            <p th:text="${product.highlights}">Product Highlights</p>
+            <p th:text="${product.price}">Product Price</p>
+            <p th:text="${product.stock}">Product Stock</p>
+            <p th:text="${product.discount}">Product Discount</p>
+            <p>More details about the artist...</p>
+        </div>
+    </div>
+</body>
+</html>

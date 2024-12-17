@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="/css/cartStyles.css">
+</head>
+<body>
+    <div class="nav_header" id="myHeader">
+        <div class="mobile_header">
+            <svg width="32px" height="32px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg"
+                transform="rotate(0)">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path d="M4 6H20M4 12H20M4 18H20" stroke="white" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                </g>
+            </svg>
+        </div>
+        <header id="header">
+            <div class="logo_placeholder">
+                <img src="/imgs/logo.png" alt="logo" />
+            </div>
+            <div class="nav_links_placeholder">
+                <ul class="nav_links">
+                    <li class="nav_link active">
+                        <a href="/"><span>Home</span></a>
+                    </li>
+                    <li class="nav_link">
+                        <a href="/entertainment"><span>Entertainment</span></a>
+                    </li>
+                    <li class="nav_link">
+                        <a href="/homePage"><span>Shopping</span></a>
+                    </li>
+                    <li class="nav_link">
+                        <a href="tourism"><span>Tourism</span></a>
+                    </li>
+                    <li class="nav_link">
+                        <a href="paybills"><span>Pay Bills</span></a>
+                    </li>
+                    <li class="nav_link">
+                        <a href="ex"><span>Hotels</span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="login-button_placeholder">
+                <button class="login_button">
+                    <a href="register" class="signup-btn">Sign Up</a>
+                </button>
+            </div>
+        </header>
+    </div>
+    <h1>Your Cart</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${cartItems}">
+                <td th:text="${item.product.name}"></td>
+                <td>
+                    <img th:src="@{/products/image/{id}(id=${item.product.productId})}" 
+                         alt="Product Image" class="product-image">
+                </td>
+                <td class="price" th:data-value="${item.product.price}" 
+                    th:text="'₹' + ${item.product.price}"></td>
+                <td>
+                    <div class="quantity">
+                        <a class="btn btn-secondary btn-sm"
+                       th:href="@{/cart/decrease/{cartItemId}(cartItemId=${item.cartId})}">-</a>
+                       <span class="quantity-value" th:text="${item.quantity}"></span>
+                       <a class="btn btn-primary btn-sm"
+                       th:href="@{/cart/increase/{cartItemId}(cartItemId=${item.cartId})}">+</a>
+                    </div>
+                </td>
+                <td class="total" th:text="'₹' + (${item.quantity} * ${item.product.price})"></td>
+                <td>
+                    <a class="btn btn-danger btn-sm" 
+                       th:href="@{/cart/delete/{cartItemId}(cartItemId=${item.cartId})}">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="total-amount">
+        <h3>Total Amount: ₹<span th:text="${totalAmount}"></span></h3>
+    </div>
+    <div class="buttons">
+        <a href="#"><button>Buy Now</button></a>
+    </div>
+</body>
+</html>

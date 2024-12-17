@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotels - Home</title>
+    <link rel="stylesheet" th:href="@{/CSS/home.css}">
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <section class="hotel-main">
+        <div class="hero-content">
+            <nav class="navBar">
+                <img th:src="@{/imgs/logo.png}" alt="MyCity Logo" width="50px" class="cityLogo">
+                <div class="navItems">
+                    <div class="navlinks">
+                        <a th:href="@{/mycity-homepage}">Home</a>
+                        <a th:href="@{/entertainment}">Entertainment</a>
+                        <a th:href="@{/homePage}">Shopping</a>
+                        <a th:href="@{/tourism}">Tourism</a>
+                        <a th:href="@{/beauty}">Pay Bills</a>
+                        <a th:href="@{/ex}" class="home">Hotels</a>
+                       <!--  <a th:href="/sub-hotels">Hotels</a> -->
+                    </div>
+                    <button><a href="/register" class="signup-btn">Sign Up</a></button>
+                </div>
+            </nav>
+            <section class="details">
+                <div class="descriptions">
+                    <h1>Luxurious Comfort in the Heart of the City</h1>
+                    <p>Experience unparalleled luxury at our hotel, where contemporary design meets classic elegance.
+                        Located in the heart of the city, we offer world-class amenities, spacious rooms, and
+                        personalized service to ensure a memorable stay.</p>
+                </div>
+                <div class="features">
+                    <p class="totals">
+                        12K+<span>Satisfied visitors</span>
+                    </p>
+                    <p class="totals">
+                        4.5K+<span>Amazing TourGuides</span>
+                    </p>
+                    <p class="totals">
+                        2K+<span>Special Travel Tips</span>
+                    </p>
+                </div>
+            </section>
+
+            <section class="filtercontainer" >
+                <div class="filterbox">
+                    <div class="filter-title">
+                        <img th:src="@{/icons/locationblack.svg}" alt="Location">
+                        <p>Location</p>
+                    </div>
+                    <input type="text" class="dateInputField-location" placeholder="Type location">
+                </div>
+
+                <div class="filterbox">
+                    <label for="personCount" class="filter-title">No of Persons</label>
+                    <div class="numberInput">
+                        <button type="button" class="decreaseBtn" onclick="updatePersonCount(-1)">-</button>
+                        <input 
+                            type="text" 
+                            id="personCount" 
+                            name="person" 
+                            class="numberInputField" 
+                            value="1">
+                        <button type="button" class="increaseBtn" onclick="updatePersonCount(1)">+</button>
+                    </div>
+                </div>
+            
+                <div class="filterbox">
+                    <label for="checkinDate" class="filter-title">Check-in</label>
+                    <div class="dateInputWrapper">
+                        <input 
+                            type="date" 
+                            id="checkinDate" 
+                            name="checkin" 
+                            class="dateInputField" 
+                            placeholder="Select date">
+                    </div>
+                </div>
+                
+            
+                <div class="filterbox">
+                    <label for="checkoutDate" class="filter-title">Check-out</label>
+                    <div class="dateInputWrapper">
+                        <input 
+                            type="date" 
+                            id="checkoutDate" 
+                            name="checkout" 
+                            class="dateInputField" 
+                            placeholder="Select date">
+                    </div>
+                </div>
+
+                <div class="searchbtn" id="reserveHotel">
+                    Search
+                </div>
+            </section>
+        </div>
+    </section>
+
+
+
+
+    <section class="hotelListContainer"   id="roomDetailsBox">
+        <div class="listTitle">
+            <h1>Explore Our Best List of Hotel!</h1>
+            <div class="listFilter">
+                <div class="search">
+                    <!-- <input type="text" placeholder="Search"> -->
+                    <form th:action="@{/search-hotels}" method="get" id="searchForm">
+                        <input type="text" name="query" placeholder="Search by name or address" value="" />
+                        <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                            <img th:src="@{/icons/search.svg}" alt="search icon" style="width: 24px; height: 24px;">
+                        </button>
+                    </form>
+                   
+                </div>
+                <img th:src="@{/icons/filterorange.svg}" alt="Filter" width="50px">
+            </div>
+        </div>
+       
+        <div class="container" style="margin-top: 40px; max-width: 100%;">
+            <div class="hotellists" id="hotelsList1" style="width: 100%; gap: 0;">
+                <div th:each="hotel : ${hotelsList1}" class="col-md-4 mb-2" style="max-width: 540px; margin: 10px;">
+                    <a th:href="@{/sub-hotels(hotelId=${hotel.hotelId})}" style="text-decoration: none; color: inherit;">
+                        <div class="row g-0">
+                            <div class="hotel-image">
+                                <!-- Render hotel image if available -->
+                                <img th:if="${hotel.primaryHotelImageBase64 != null}"
+                                     th:src="'data:image/jpeg;base64,' + ${hotel.primaryHotelImageBase64}"
+                                     alt="Hotel Image" 
+                                     style="width: 90%; height: 250px; object-fit: cover;">
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${hotel.name}">Hotel Name</h5>
+                                    <p class="card-text" th:text="${hotel.address.addressLine2}">Hotel Description</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                          <!--    <span class="rating-value" th:text="${hotel.rating}"></span> -->
+                                            <span class="stars-container">
+                                                <!-- Loop to print filled stars -->
+                                                <span th:each="i : ${#numbers.sequence(1, hotel.rating)}" class="star filled">★</span>
+                                                <!-- Loop to print empty stars -->
+                                                <span th:each="i : ${#numbers.sequence(1, 5 - hotel.rating)}" class="star empty">★</span>
+                                            </span>
+                                        </small>
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+
+       
+    </section>
+
+    <section class="dealsDiscount">
+        <h1 class="title">Deals & Discounts</h1>
+        <div class="discountBox">
+            <div class="codeMyCity offerBox">
+                <p class="code">Use Code: MyCity</p>
+                <p class="offer">Flat 25% Off</p>
+                <p class="bookNow">BOOK NOW</p>
+            </div>
+            <div class="codeTour offerBox">
+                <p class="code">Use Code: Tour</p>
+                <p class="offer">GET 30% Off</p>
+                <p class="bookNow">BOOK NOW</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="touristPlaces">
+        <h1 class="title">Tourists Places Near You</h1>
+        <div class="placesContainer">
+            <div class="imageBox">
+                <img src="/images/hotels/anakuvalley.png" alt="Anaku Valley" class="placeimages">
+                <p class="placeName">Araku Valley Natural Wonders Day Trip From Vizag</p>
+            </div>
+            <div class="imageBox">
+                <img src="/images/hotels/jindhagada.png" alt="Jindhagada Trek" class="placeimages">
+                <p class="placeName">Jindhagada Trek</p>
+            </div>
+            <div class="imageBox">
+                <img src="/images/hotels/coastalgemprivate.png" alt="Visakhapatnam - The Coastal Gem Private Tour" class="placeimages">
+                <p class="placeName">Visakhapatnam - The Coastal Gem Private Tour</p>
+            </div>
+        </div>
+        
+
+    </section>
+
+    <script type="module" th:src="@{/JS/home.js}"></script>
+
+    <script>
+        
+        document.addEventListener("DOMContentLoaded", function () {
+    const starsContainers = document.querySelectorAll(".stars-container");
+    starsContainers.forEach(container => {
+        const rating = parseFloat(container.getAttribute("data-rating"));
+        const starPercentage = (rating / 5) * 100; // Assuming the rating is out of 5
+        container.style.setProperty("--star-percentage", `${starPercentage}%`);
+        container.style.width = `${starPercentage}%`; // Dynamic width based on rating
+    });
+});
+/* 
+function filterHotels() {
+    const searchInput = document.getElementById("hotelSearch").value.toLowerCase();
+    const hotelCards = document.querySelectorAll(".hotellists .col-md-4");
+
+    hotelCards.forEach(card => {
+        const hotelName = card.querySelector(".card-title").textContent.toLowerCase();
+        const hotelAddress = card.querySelector(".card-text").textContent.toLowerCase();
+
+        if (hotelName.includes(searchInput) || hotelAddress.includes(searchInput)) {
+            card.style.display = "block"; // Show matching card
+        } else {
+            card.style.display = "none"; // Hide non-matching card
+      }
+   });
+}
+ */  
+
+ function filterHotels() {
+    const searchInput = document.getElementById("hotelSearch").value.toLowerCase();
+    const hotelCards = document.querySelectorAll(".hotellists .col-md-4");
+    let firstMatch = null;
+
+    hotelCards.forEach(card => {
+        const hotelName = card.querySelector(".card-title").textContent.toLowerCase();
+        const hotelAddress = card.querySelector(".card-text").textContent.toLowerCase();
+
+        if (hotelName.includes(searchInput) || hotelAddress.includes(searchInput)) {
+            card.style.display = "block"; // Show matching card
+            if (!firstMatch) {
+                firstMatch = card; // Store the first matching card
+            }
+        } else {
+            card.style.display = "none"; // Hide non-matching card
+        }
+    });
+
+    if (firstMatch) {
+        // Scroll to the first matching hotel card
+        firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+// Existing search functionality
+document.getElementById("searchForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // Prevent default form submission
+    const form = this;
+
+    // Perform the search using the current form action
+    const url = form.action + "?" + new URLSearchParams(new FormData(form)).toString();
+    fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            // Replace hotel list content with search results
+            document.querySelector(".hotellists").innerHTML = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector(".hotellists").innerHTML;
+
+            // Scroll to hotel list container
+            document.getElementById("roomDetailsBox").scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(error => console.error("Error:", error));
+});
+
+// Detect when the search input is cleared or updated (input event)
+const searchInput = document.querySelector("#searchForm input[type='text']");
+searchInput.addEventListener("input", function () {
+    if (!searchInput.value.trim()) {
+        // If the search box is empty, fetch and show all hotel cards
+        fetchAllHotels();
+    }
+});
+
+// Function to fetch and display all hotel cards (when search is cleared)
+function fetchAllHotels() {
+    const url = 'http://localhost:8080/ex';  // URL for fetching all hotels
+
+    fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            // Replace hotel list content with all hotels
+            document.querySelector(".hotellists").innerHTML = new DOMParser()
+                .parseFromString(html, "text/html")
+                .querySelector(".hotellists").innerHTML;
+
+            // Scroll to hotel list container (optional)
+            document.getElementById("roomDetailsBox").scrollIntoView({ behavior: "smooth" });
+        })
+        .catch(error => console.error("Error:", error));
+}
+    
+
+
+
+
+
+/* for filter section */
+
+function updatePersonCount(change) {
+    const inputField = document.getElementById('personCount');
+    let currentValue = parseInt(inputField.value) || 0;
+
+    // Adjust the value within valid bounds
+    let newValue = currentValue + change;
+    if (newValue < 1) newValue = 1; // Minimum 1 person
+    if (newValue > 10) newValue = 10; // Maximum 10 persons
+
+    inputField.value = newValue;
+}
+
+// Prevent non-numeric input
+document.getElementById('personCount').addEventListener('input', function (e) {
+    const value = e.target.value;
+    if (!/^\d*$/.test(value)) {
+        e.target.value = value.replace(/\D/g, ''); // Remove non-numeric characters
+    }
+});
+
+</script>
+    
+    <script type="module" th:src="@{/JS/filter.js}"></script>
+   <!--  <script src="/path/to/rating-stars.js"></script> -->
+
+</body>
+</html>

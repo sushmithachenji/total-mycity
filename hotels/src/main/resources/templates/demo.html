@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Image Gallery</title>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <div style="display: flex;">
+            <div th:each="image : ${images}" >
+                <!-- <img th:src="@{/images/{imageId}(imageId=${image.imageId})}" alt="Image" /> -->
+                <img th:src="@{${imageUrl}}" alt="Product Image" />
+            </div>
+    </div>
+</body>
+</html>
