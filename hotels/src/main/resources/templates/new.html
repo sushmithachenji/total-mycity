@@ -2,13 +2,255 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Reservation Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .image-container {
+            flex: 1;
+            margin-right: 20px;
+        }
+        .details-container {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .image-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF5733;
+            margin-top: 10px;
+        }
+        .reserve-button {
+            background-color: #FF5733;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .reserve-button:hover {
+            background-color: #FF4500;
+        }
+        .amenities-section {
+            display: block;
+        }
+        .amenities {
+            display: flex;
+            gap: 15px;
+        }
+        .amenities li {
+            display: flex;
+            align-items: center;
+        }
+        .amenities img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+
+        /* Price Input Style */
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .roomPrice {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF5733;
+        }
+        .quantity-input {
+            width: 30px;
+            text-align: center;
+        }
+        .minus, .plus {
+            background-color: #FF5733;
+            color: white;
+            padding: 6px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .minus:hover, .plus:hover {
+            background-color: #FF4500;
+        }
+    </style>
 </head>
 <body>
-    <h1>Reservation Successful!</h1>
-    <p>Room Type: <span th:text="${reservation.roomType}"></span></p>
-    <p>Price: ₹<span th:text="${reservation.price}"></span></p>
-    <p>Guests: <span th:text="${reservation.maxGuests}"></span></p>
-    <p>Check-in Date: <span th:text="${reservation.checkinDate}"></span></p>
-    <p>Check-out Date: <span th:text="${reservation.checkoutDate}"></span></p>
+
+    <h1 style="text-align: center; margin-top: 20px;">Reservation Successful!</h1>
+    
+    <!-- Reservation Details Container (Flex Layout with Image on Left and Details on Right) -->
+    <div class="container">
+        <!-- Left: Room Image -->
+        <div class="image-container">
+            <img th:src="'data:image/jpeg;base64,' + ${reservation.primaryRoomImageBase64}" alt="Room Image">
+        </div>
+
+        <!-- Right: Reservation Details -->
+        <div class="details-container">
+            <!-- Room Details -->
+            <p><strong>Room Type:</strong> <span th:text="${reservation.roomType}"></span></p>
+            <p><strong>Max-Guests:</strong> <span th:text="${reservation.maxGuests}"></span></p>
+            <p><strong>Check-in Date:</strong> <span th:text="${reservation.checkinDate}"></span></p>
+            <p><strong>Check-out Date:</strong> <span th:text="${reservation.checkoutDate}"></span></p>
+            
+            <!-- Amenities Section -->
+            <div class="amenities-section">
+                <h2 class="section-title">Amenities:</h2>
+                <ul class="amenities">
+                    <li th:each="amenity : ${reservation.amenities}">
+                        <img th:src="@{${amenity.name == 'Bed' ? '/icons/bed.svg' : 
+                                         amenity.name == 'Smart TV' ? '/icons/tv.svg' : 
+                                         amenity.name == 'Parking' ? '/icons/parking.svg' : 
+                                         amenity.name == 'No Smoking' ? '/icons/nosmoke.svg' : 
+                                         amenity.name == 'Shower' ? '/icons/shower.svg' : 
+                                         amenity.name == 'City View' ? '/icons/city.svg' : 
+                                         amenity.name == 'Free Wi-Fi' ? '/icons/wifi.svg' :
+                                         amenity.name == '24/7 Room Service' ? '/icons/room.svg' :
+                                         amenity.name == 'Private Dining Experiences' ? '/icons/dining.svg' :
+                                         '/icons/filterorange.svg'}}" 
+                             th:alt="${amenity.name + ' Icon'}" 
+                             class="icons">
+                        <p th:text="${amenity.name}"></p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Price Section with Quantity Adjustment -->
+            <div class="price-container">
+                <p class="roomPrice">₹ <span id="price" th:text="${reservation.price}"></span></p>
+                <button class="minus">-</button>
+                <input type="number" id="quantity" value="1" min="1" class="quantity-input">
+                <button class="plus">+</button>
+            </div>
+
+            <!-- <p>Room count is: <span th:text="${roomCount}"></span></p> -->
+
+            <!-- <p id="availability-status" style="font-weight: bold;"></p> -->
+
+            <!-- Reserve Button -->
+           <div style="display: flex; gap: 5px;">
+   
+        <button type="submit" class="reserve-button">Reserve</button> <!-- Reserve button -->
+
+
+    <button class="reserve-button">Cancel</button>
+</div>
+
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            const priceElement = document.getElementById("price");
+            const quantityInput = document.getElementById("quantity");
+            const pricePerNight = parseFloat(priceElement.textContent);
+            const availabilityStatus = document.getElementById("availability-status");
+    
+            // Injecting roomCount using Thymeleaf and ensuring it's an integer
+            const availableRooms = 0; // Set a fallback value if Thymeleaf fails to inject the value
+    
+            const minusButton = document.querySelector(".minus");
+            const plusButton = document.querySelector(".plus");
+    
+            // Initial availability check
+            checkAvailability(parseInt(quantityInput.value));
+    
+            minusButton.addEventListener("click", function() {
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantity--;
+                    quantityInput.value = quantity;
+                    updatePrice(quantity);
+                    checkAvailability(quantity);
+                }
+            });
+    
+            plusButton.addEventListener("click", function() {
+                let quantity = parseInt(quantityInput.value);
+                quantity++;
+    
+                // Check if quantity exceeds available rooms
+                if (quantity > availableRooms) {
+                    availabilityStatus.textContent = "Not enough rooms available!";
+                    availabilityStatus.style.color = "red";
+                    plusButton.disabled = true;  // Disable the plus button
+                } else {
+                    quantityInput.value = quantity;
+                    updatePrice(quantity);
+                    checkAvailability(quantity);
+                }
+            });
+    
+            function updatePrice(quantity) {
+                const totalPrice = pricePerNight * quantity;
+                priceElement.textContent = totalPrice.toFixed(2);
+            }
+    
+            function checkAvailability(quantity) {
+                if (quantity > availableRooms) {
+                    availabilityStatus.textContent = "Not enough rooms available!";
+                    availabilityStatus.style.color = "red";
+                    plusButton.disabled = true;  // Disable the plus button
+                } else {
+                    availabilityStatus.textContent = "Rooms available: " + (availableRooms - quantity);
+                    availabilityStatus.style.color = "green";
+                    plusButton.disabled = false; // Re-enable the plus button
+                }
+            }
+        });
+
+
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const priceElement = document.getElementById('price');
+    const quantityInput = document.getElementById('quantity');
+    const originalPrice = parseFloat(priceElement.innerText);
+
+    document.querySelector('.plus').addEventListener('click', () => {
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+        priceElement.innerText = (originalPrice * quantityInput.value).toFixed(2);
+    });
+
+    document.querySelector('.minus').addEventListener('click', () => {
+        if (quantityInput.value > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
+            priceElement.innerText = (originalPrice * quantityInput.value).toFixed(2);
+        }
+    });
+});
+
+    </script>
+
+
+
 </body>
 </html>

@@ -3,23 +3,21 @@ package com.example.hotels.Model;
 
 import java.util.Date;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "booking")
@@ -32,10 +30,10 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
 
-    @ManyToOne
+   /*  @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
      @ToString.Exclude
-    private User user;
+    private User user;  */
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
@@ -58,14 +56,19 @@ public class Booking {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Payment payment;
+    /* @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment; */
 
      // New field for person count
-     private int personCount;
+     private Integer personCount;
+
+
+     private int maxGuests;
 
     // Getters and Setters
 
+    private String roomType;
+   
 
      @PrePersist
     protected void onCreate() {
@@ -81,16 +84,17 @@ public class Booking {
     }
 
 
-    @Override
-public String toString() {
-    return "Booking{id=" + bookingId +
-           ", checkInDate=" + checkInDate +
-           ", checkOutDate=" + checkOutDate +
-           ", room=" + (room != null ? room.getRoomId() : null) +
-           ", user=" + (user != null ? user.getUserId() : null) +
-           '}';
-}
+    @Transient // This field is only for form handling
+    private Long roomId;
+
+    // Getters and Setters
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+ 
 
 }
-
-

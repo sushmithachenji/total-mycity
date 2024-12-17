@@ -25,7 +25,8 @@
                         <a th:href="@{/ex}" class="home">Hotels</a>
                        <!--  <a th:href="/sub-hotels">Hotels</a> -->
                     </div>
-                    <button><a href="/register" class="signup-btn">Sign Up</a></button>
+
+                    <div ><a href="/register" class="signup-btn" id="booknow">Sign Up</a></div>
                 </div>
             </nav>
             <section class="details">
@@ -57,9 +58,13 @@
                     <input type="text" class="dateInputField-location" placeholder="Type location">
                 </div>
 
-                <div class="filterbox">
-                    <label for="personCount" class="filter-title">No of Persons</label>
-                    <div class="numberInput">
+                <div class="filterbox" style="margin-bottom: 10px">
+                    <div class="filter-title">
+                        
+                        <p>No of Persons</p>
+                    </div>
+                  <!--   <label for="personCount" class="filter-title">No of Persons</label> -->
+                    <div class="numberInput"style="margin-left:30px">
                         <button type="button" class="decreaseBtn" onclick="updatePersonCount(-1)">-</button>
                         <input 
                             type="text" 
@@ -72,7 +77,11 @@
                 </div>
             
                 <div class="filterbox">
-                    <label for="checkinDate" class="filter-title">Check-in</label>
+                    <div class="filter-title">
+                        
+                        <p>Check-in</p>
+                    </div>
+                  <!--   <label for="checkinDate" class="filter-title">Check-in</label -->
                     <div class="dateInputWrapper">
                         <input 
                             type="date" 
@@ -85,7 +94,11 @@
                 
             
                 <div class="filterbox">
-                    <label for="checkoutDate" class="filter-title">Check-out</label>
+                    <div class="filter-title">
+                        
+                        <p>Check-out</p>
+                    </div>
+                   <!--  <label for="checkoutDate" class="filter-title">Check-out</label> -->
                     <div class="dateInputWrapper">
                         <input 
                             type="date" 
